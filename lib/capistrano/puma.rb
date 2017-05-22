@@ -48,9 +48,9 @@ module Capistrano
       backend.upload! StringIO.new(ERB.new(erb, nil, '-').result(binding)), to
     end
 
-    def sudo_command(str)
+    def sudo_command(*args)
       ask(:password, "pwd", echo: false)
-      execute "echo #{fetch(:password)} | sudo -S  " + str
+      execute "echo #{fetch(:password)} | sudo -S  " + args.join(" ")
     end
   end
 
