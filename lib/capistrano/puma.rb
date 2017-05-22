@@ -47,6 +47,11 @@ module Capistrano
       erb = File.read(file)
       backend.upload! StringIO.new(ERB.new(erb, nil, '-').result(binding)), to
     end
+
+    def sudo_command(str)
+      ask(:password, "pwd", echo: false)
+      execute "echo #{fetch(:password)} | sudo -S  " + str
+    end
   end
 
   class Puma < Capistrano::Plugin

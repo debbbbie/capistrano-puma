@@ -7,7 +7,7 @@ namespace :puma do
       on roles(fetch(:puma_role)) do |role|
         git_plugin.template_puma 'run-puma', "#{fetch(:tmp_dir)}/run-puma", role
         execute "chmod +x #{fetch(:tmp_dir)}/run-puma"
-        sudo "mv #{fetch(:tmp_dir)}/run-puma #{fetch(:puma_run_path)}"
+        sudo_command "mv #{fetch(:tmp_dir)}/run-puma #{fetch(:puma_run_path)}"
         if test '[ -f /etc/redhat-release ]'
           #RHEL flavor OS
           git_plugin.rhel_install(role)
@@ -18,7 +18,7 @@ namespace :puma do
           #Some other OS
           error 'This task is not supported for your OS'
         end
-        sudo "touch #{fetch(:puma_jungle_conf)}"
+        sudo_command "touch #{fetch(:puma_jungle_conf)}"
       end
     end
 
@@ -32,14 +32,14 @@ namespace :puma do
     desc 'Add current project to the jungle'
     task :add do
       on roles(fetch(:puma_role)) do|role|
-        sudo "/etc/init.d/puma add '#{current_path}' #{fetch(:puma_user, role.user)}"
+        sudo_command "/etc/init.d/puma add '#{current_path}' #{fetch(:puma_user, role.user)}"
       end
     end
 
     desc 'Remove current project from the jungle'
     task :remove do
       on roles(fetch(:puma_role)) do
-        sudo "/etc/init.d/puma remove '#{current_path}'"
+        sudo_command "/etc/init.d/puma remove '#{current_path}'"
       end
     end
 
@@ -47,7 +47,7 @@ namespace :puma do
       desc "#{command} puma"
       task command do
         on roles(fetch(:puma_role)) do
-          sudo "service puma #{command} #{current_path}"
+          sudo_command "service puma #{command} #{current_path}"
         end
       end
     end
